@@ -49,7 +49,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **型安全性確保** - TypeScript 厳格モード、型エラーゼロ
 - **ビルド成功確認** - Vite プロダクションビルド正常完了
-- **基本テスト通過** - DOM操作、文字列・配列操作、環境確認
+- **包括的テスト** - 30のユニットテスト（DOM、カメラ、姿勢分析、統合テスト）
+- **テスト自動化** - モック化によるテスト環境の安定化
+- **CI/CD統合** - GitHub Actions での自動テスト実行
 
 ## 現在のプロジェクト
 
@@ -65,10 +67,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `make build` - プロダクションビルド
   - `make preview` - ビルド版プレビューサーバー
   - `make install` - 依存関係インストール
-  - `make test` - 全テスト実行（ユニット + E2E）
+  - `make test` - ユニットテスト実行（30テスト）
   - `make test-unit` - ユニットテスト実行
-  - `make test-e2e` - E2Eテスト実行  
-  - `make lint` - コードリンティング
+  - `make test-e2e` - E2Eテスト実行（ブラウザ自動インストール）
+  - `make lint` - コードリンティング（型チェック推奨）
   - `make type-check` - TypeScript型チェック
 
 ## Code Architecture

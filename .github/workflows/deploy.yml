@@ -51,6 +51,12 @@ jobs:
         run: |
           cd posture-diagnosis
           npm run build
+          
+      - name: Basic E2E smoke test
+        run: |
+          cd posture-diagnosis
+          npx playwright install chromium --with-deps
+          npm run test:e2e -- --project=chromium
 
   # デプロイ実行
   deploy:

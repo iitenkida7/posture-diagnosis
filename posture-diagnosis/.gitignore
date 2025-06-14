@@ -17,6 +17,10 @@ assets/js/
 assets/css/output.css
 *.log
 
+# Test artifacts
+test-results/
+playwright-report/
+
 # Environment
 .env
 .env.local

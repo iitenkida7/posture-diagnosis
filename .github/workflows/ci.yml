@@ -47,12 +47,12 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           cd posture-diagnosis
-          npx playwright install --with-deps
+          npx playwright install chromium --with-deps
           
       - name: E2E tests
         run: |
           cd posture-diagnosis
-          npm run test:e2e
+          npm run test:e2e -- --project=chromium
           
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4

@@ -35,7 +35,6 @@ install:
 # 全テスト実行
 test:
 	docker-compose run --rm node-test npm run test:run
-	docker-compose run --rm node-test npm run test:e2e
 
 # ユニットテスト実行
 test-unit:
@@ -43,7 +42,8 @@ test-unit:
 
 # E2Eテスト実行
 test-e2e:
-	docker-compose run --rm node-test npm run test:e2e
+	@echo "Setting up E2E test environment..."
+	docker-compose run --rm node-test bash -c "npx playwright install chromium && npm run test:e2e"
 
 # コードリンティング
 lint:

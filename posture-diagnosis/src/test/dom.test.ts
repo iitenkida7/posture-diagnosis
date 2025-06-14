@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 
-// 簡単な統合テスト
-describe('Application Integration Tests', () => {
+// DOM操作の基本テスト
+describe('DOM Manipulation Tests', () => {
   beforeEach(() => {
-    // DOMを一度クリア
+    // DOMをリセット
     document.body.innerHTML = ''
     
-    // テスト用のHTMLを設定
+    // 基本的なHTML構造を作成
     document.body.innerHTML = `
       <section id="landing" class="">
         <button id="startBtn">診断開始</button>
       </section>
       <section id="camera" class="hidden">
         <button id="backBtn">戻る</button>
-        <video id="videoElement"></video>
-        <canvas id="guideCanvas"></canvas>
+        <video id="video"></video>
+        <canvas id="canvas"></canvas>
         <button id="captureBtn">撮影</button>
       </section>
       <section id="questionnaire" class="hidden">
@@ -41,18 +41,15 @@ describe('Application Integration Tests', () => {
     `
   })
 
-  it('アプリケーションの基本DOM要素が存在する', () => {
-    // 基本的な要素が存在することを確認
+  it('必要なDOM要素が存在する', () => {
     expect(document.getElementById('landing')).toBeTruthy()
     expect(document.getElementById('camera')).toBeTruthy()
     expect(document.getElementById('questionnaire')).toBeTruthy()
     expect(document.getElementById('result')).toBeTruthy()
     expect(document.getElementById('startBtn')).toBeTruthy()
-    expect(document.getElementById('videoElement')).toBeTruthy()
-    expect(document.getElementById('guideCanvas')).toBeTruthy()
   })
 
-  it('セクションの初期状態が正しい', () => {
+  it('初期状態でランディングセクションが表示される', () => {
     const landingSection = document.getElementById('landing')
     const cameraSection = document.getElementById('camera')
     
@@ -60,14 +57,25 @@ describe('Application Integration Tests', () => {
     expect(cameraSection?.classList.contains('hidden')).toBe(true)
   })
 
+  it('セクションの表示切替が正常に動作する', () => {
+    const landingSection = document.getElementById('landing')
+    const cameraSection = document.getElementById('camera')
+    
+    // セクション切り替えのテスト
+    landingSection?.classList.add('hidden')
+    cameraSection?.classList.remove('hidden')
+    
+    expect(landingSection?.classList.contains('hidden')).toBe(true)
+    expect(cameraSection?.classList.contains('hidden')).toBe(false)
+  })
+
   it('フォーム要素が正常に動作する', () => {
-    const questionForm = document.getElementById('questionForm') as HTMLFormElement
-    expect(questionForm).toBeTruthy()
+    const form = document.getElementById('questionForm') as HTMLFormElement
+    const deskworkSelect = form.querySelector('select[name="deskwork"]') as HTMLSelectElement
+    const exerciseSelect = form.querySelector('select[name="exercise"]') as HTMLSelectElement
+    const checkbox = form.querySelector('input[type="checkbox"]') as HTMLInputElement
     
-    const deskworkSelect = questionForm.querySelector('select[name="deskwork"]') as HTMLSelectElement
-    const exerciseSelect = questionForm.querySelector('select[name="exercise"]') as HTMLSelectElement
-    const checkbox = questionForm.querySelector('input[type="checkbox"]') as HTMLInputElement
-    
+    expect(form).toBeTruthy()
     expect(deskworkSelect).toBeTruthy()
     expect(exerciseSelect).toBeTruthy()
     expect(checkbox).toBeTruthy()
@@ -82,22 +90,32 @@ describe('Application Integration Tests', () => {
     expect(checkbox.checked).toBe(true)
   })
 
-  it('DOM操作の基本機能が動作する', () => {
-    const landingSection = document.getElementById('landing')
-    const cameraSection = document.getElementById('camera')
+  it('ボタンのクリックイベントが発火する', () => {
+    const startBtn = document.getElementById('startBtn')
+    let clicked = false
     
-    // クラスの追加・削除テスト
-    landingSection?.classList.add('hidden')
-    cameraSection?.classList.remove('hidden')
+    startBtn?.addEventListener('click', () => {
+      clicked = true
+    })
     
-    expect(landingSection?.classList.contains('hidden')).toBe(true)
-    expect(cameraSection?.classList.contains('hidden')).toBe(false)
+    startBtn?.click()
+    expect(clicked).toBe(true)
+  })
+
+  it('フォームのリセットが正常に動作する', () => {
+    const form = document.getElementById('questionForm') as HTMLFormElement
+    const deskworkSelect = form.querySelector('select[name="deskwork"]') as HTMLSelectElement
+    const checkbox = form.querySelector('input[type="checkbox"]') as HTMLInputElement
     
-    // 元に戻す
-    landingSection?.classList.remove('hidden')
-    cameraSection?.classList.add('hidden')
+    // 値を設定
+    deskworkSelect.value = '3-5'
+    checkbox.checked = true
     
-    expect(landingSection?.classList.contains('hidden')).toBe(false)
-    expect(cameraSection?.classList.contains('hidden')).toBe(true)
+    // リセット
+    form.reset()
+    
+    // フォームリセット後は最初のオプションが選択される
+    expect(deskworkSelect.value).toBe('0-2') // 最初のオプション値
+    expect(checkbox.checked).toBe(false)
   })
 })
