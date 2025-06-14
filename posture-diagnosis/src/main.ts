@@ -1,4 +1,10 @@
 // メイン処理
+import { CameraManager } from './camera.js';
+
+// グローバル変数
+let cameraManager: CameraManager;
+let capturedImage: string | null = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     // 要素の取得
     const landingSection = document.getElementById('landing') as HTMLElement;
@@ -13,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
     const retryBtn = document.getElementById('retryBtn') as HTMLButtonElement;
     
+    // カメラマネージャーの初期化
+    cameraManager = new CameraManager();
+    
     // セクション切り替え関数
     const showSection = (section: HTMLElement) => {
         [landingSection, cameraSection, questionnaireSection, resultSection].forEach(s => {
@@ -22,20 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // 診断開始ボタン
-    startBtn.addEventListener('click', () => {
+    startBtn.addEventListener('click', async () => {
         showSection(cameraSection);
-        // カメラを初期化（次のタスクで実装）
+        // カメラを初期化
+        await cameraManager.initialize();
     });
     
     // 戻るボタン
     backBtn.addEventListener('click', () => {
+        cameraManager.stop();
         showSection(landingSection);
     });
     
     // 撮影ボタン
     captureBtn.addEventListener('click', () => {
-        // 撮影処理（次のタスクで実装）
-        showSection(questionnaireSection);
+        // 撮影処理
+        capturedImage = cameraManager.capture();
+        if (capturedImage) {
+            cameraManager.stop();
+            showSection(questionnaireSection);
+        } else {
+            alert('撮影に失敗しました。もう一度お試しください。');
+        }
     });
     
     // アンケートフォーム送信
@@ -54,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // もう一度診断ボタン
     retryBtn.addEventListener('click', () => {
+        capturedImage = null;
         showSection(landingSection);
     });
 });
