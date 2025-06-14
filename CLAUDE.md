@@ -24,10 +24,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### みんなの姿勢診断 (posture-diagnosis/)
 - カメラで姿勢を撮影して分析するWebアプリ
-- 主な開発コマンド:
-  - `make serve` - 開発サーバー起動
-  - `make build` - TypeScriptコンパイル
-  - `make docker-serve` - Docker環境でサーバー起動
+- 主な開発コマンド（プロジェクトルートから実行）:
+  - `make posture-serve` - 開発サーバー起動
+  - `make posture-build` - TypeScriptコンパイル
+  - `make posture-docker-serve` - Docker環境でサーバー起動
 
 ## Code Architecture
 
