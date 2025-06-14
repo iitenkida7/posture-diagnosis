@@ -97,41 +97,41 @@ document.addEventListener('DOMContentLoaded', () => {
                           result.score >= 60 ? 'text-yellow-600' : 'text-red-600';
         
         resultContent.innerHTML = `
-            <div class="text-center mb-8">
-                <h3 class="text-3xl font-bold mb-4">${result.name}</h3>
-                <div class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-purple-100 mb-4">
-                    <span class="text-5xl font-bold ${scoreColor}">${result.score}</span>
+            <div class="text-center mb-10">
+                <h3 class="text-4xl font-bold mb-6 text-pink-700">💖 ${result.name} 💖</h3>
+                <div class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-pink-100 mb-6 sparkle" style="background: linear-gradient(135deg, #ffc0cb, #ffb6c1); border: 4px solid #ff69b4;">
+                    <span class="text-6xl font-bold ${scoreColor}">${result.score}</span>
                 </div>
-                <p class="text-gray-600">${result.description}</p>
+                <p class="text-lg text-pink-600 font-semibold">${result.description}</p>
             </div>
             
             ${result.problems.length > 0 ? `
-                <div class="mb-8">
-                    <h4 class="text-xl font-bold mb-4 text-gray-800">
-                        <span class="inline-block w-8 h-8 bg-red-100 rounded-full text-center mr-2">⚠️</span>
-                        注意すべき症状
+                <div class="mb-10 bg-red-50 p-6 rounded-3xl border-2 border-red-200">
+                    <h4 class="text-2xl font-bold mb-6 text-red-700 text-center">
+                        <span class="text-3xl mr-2">😰</span>
+                        ちょっと気をつけたい症状
                     </h4>
-                    <ul class="space-y-2">
+                    <ul class="space-y-4">
                         ${result.problems.map(problem => `
-                            <li class="flex items-start">
-                                <span class="text-red-500 mr-2">•</span>
-                                <span class="text-gray-700">${problem}</span>
+                            <li class="flex items-start bg-white p-4 rounded-2xl">
+                                <span class="text-red-500 mr-3 text-2xl">⚠️</span>
+                                <span class="text-red-700 font-semibold text-lg">${problem}</span>
                             </li>
                         `).join('')}
                     </ul>
                 </div>
             ` : ''}
             
-            <div>
-                <h4 class="text-xl font-bold mb-4 text-gray-800">
-                    <span class="inline-block w-8 h-8 bg-green-100 rounded-full text-center mr-2">💡</span>
-                    改善のためのアドバイス
+            <div class="bg-green-50 p-6 rounded-3xl border-2 border-green-200">
+                <h4 class="text-2xl font-bold mb-6 text-green-700 text-center">
+                    <span class="text-3xl mr-2">✨</span>
+                    可愛く改善しちゃお！
                 </h4>
-                <ul class="space-y-2">
+                <ul class="space-y-4">
                     ${result.recommendations.map(rec => `
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            <span class="text-gray-700">${rec}</span>
+                        <li class="flex items-start bg-white p-4 rounded-2xl">
+                            <span class="text-green-500 mr-3 text-2xl">💕</span>
+                            <span class="text-green-700 font-semibold text-lg">${rec}</span>
                         </li>
                     `).join('')}
                 </ul>
@@ -144,11 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!analysisResult) return;
         
         // シェア用のテキストを作成
-        const shareText = `【姿勢診断結果】
+        const shareText = `✨【姿勢診断やってみた】💕
 私の姿勢タイプは「${analysisResult.name}」でした！
-スコア: ${analysisResult.score}点
+スコア: ${analysisResult.score}点 🌸
 
-#みんなの姿勢診断`;
+みんなもやってみて〜💖
+#みんなの姿勢診断 #姿勢改善 #女子力アップ`;
         
         // Twitter シェア（実装例）
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
