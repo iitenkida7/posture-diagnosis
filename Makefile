@@ -34,7 +34,10 @@ install:
 
 # 全テスト実行
 test:
+	@echo "Running unit tests..."
 	docker-compose run --rm node-test npm run test:run
+	@echo "Running E2E tests..."
+	docker-compose run --rm playwright
 
 # ユニットテスト実行
 test-unit:
@@ -42,7 +45,6 @@ test-unit:
 
 # E2Eテスト実行
 test-e2e:
-	@echo "Running E2E tests with Playwright official container..."
 	docker-compose run --rm playwright
 
 # コードリンティング
