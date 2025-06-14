@@ -52,15 +52,15 @@ export class CameraManager {
         const centerX = this.guideCanvas.width / 2;
         const centerY = this.guideCanvas.height / 2;
         
-        // ピンク系のグラデーション
+        // ピンク系のグラデーション（より濃く）
         const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
-        gradient.addColorStop(0, 'rgba(236, 72, 153, 0.4)'); // primary-500
-        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.2)'); // primary-500 薄い
+        gradient.addColorStop(0, 'rgba(236, 72, 153, 0.7)'); // primary-500 濃く
+        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.5)'); // primary-500 中間
         
         // 塗りつぶし色を設定
         ctx.fillStyle = gradient;
-        ctx.strokeStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(219, 39, 119, 1.0)'; // primary-600 完全不透明
+        ctx.lineWidth = 4;
         
         // 頭部（円）- 塗りつぶし
         const headRadius = 45;
@@ -91,9 +91,9 @@ export class CameraManager {
         ctx.stroke();
         
         // 腕（太い線で描画）
-        ctx.lineWidth = 15;
+        ctx.lineWidth = 18;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(219, 39, 119, 0.6)'; // primary-600
+        ctx.strokeStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600 濃く
         
         // 左腕
         ctx.beginPath();
@@ -108,7 +108,7 @@ export class CameraManager {
         ctx.stroke();
         
         // 脚（太い線で描画）
-        ctx.lineWidth = 18;
+        ctx.lineWidth = 20;
         
         // 左脚
         ctx.beginPath();
@@ -123,7 +123,7 @@ export class CameraManager {
         ctx.stroke();
         
         // 手と足（小さな円）
-        ctx.fillStyle = 'rgba(219, 39, 119, 0.8)';
+        ctx.fillStyle = 'rgba(219, 39, 119, 0.9)';
         
         // 左手
         ctx.beginPath();

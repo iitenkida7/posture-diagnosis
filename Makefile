@@ -1,45 +1,27 @@
-# プロジェクト共通 Makefile
+# 姿勢診断アプリ開発用 Makefile
 
-.PHONY: help
+.PHONY: help dev build clean install
+
+# デフォルトターゲット
 help:
-	@echo "=== みんなの姿勢診断 ==="
-	@echo "make serve     - サーバーを起動"
-	@echo "make build     - TypeScript/CSS をビルド"
-	@echo "make build-ts  - TypeScript のみビルド"
-	@echo "make build-css - Tailwind CSS のみビルド"
-	@echo "make clean     - ビルド成果物を削除"
-	@echo "make install   - 依存関係をインストール"
+	@echo "利用可能なコマンド:"
+	@echo "  make dev     - 開発モード（リアルタイムコンパイル）"
+	@echo "  make build   - プロダクションビルド"
+	@echo "  make install - 依存関係のインストール"
+	@echo "  make clean   - ビルドファイルの削除"
+
+# 開発モード（リアルタイムコンパイル）
+dev:
+	cd posture-diagnosis && npm run dev
+
+# プロダクションビルド
+build:
+	cd posture-diagnosis && npm run build
 
 # 依存関係のインストール
-.PHONY: install
 install:
-	docker compose run --rm node-install
+	cd posture-diagnosis && npm install
 
-# みんなの姿勢診断
-.PHONY: build
-build:
-	docker compose run --rm node-build
-
-.PHONY: build-ts
-build-ts:
-	docker compose run --rm node
-
-.PHONY: build-css
-build-css:
-	docker compose run --rm node-css
-
-.PHONY: serve
-serve: build
-	docker compose run --rm --service-ports node-serve
-
-.PHONY: clean
+# ビルドファイルの削除
 clean:
-	cd posture-diagnosis && rm -rf assets/js/*.js assets/js/*.js.map assets/css/output.css
-
-.PHONY: watch
-watch:
-	docker compose run --rm node-watch
-
-.PHONY: dev
-dev:
-	docker compose run --rm node-dev
+	cd posture-diagnosis && rm -rf assets/js/* assets/css/output.css
