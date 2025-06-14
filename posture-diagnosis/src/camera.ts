@@ -48,53 +48,113 @@ export class CameraManager {
         // クリア
         ctx.clearRect(0, 0, this.guideCanvas.width, this.guideCanvas.height);
         
-        // 人型のガイドを描画
+        // 人型のガイドを描画（ピンク系の塗りつぶし）
         const centerX = this.guideCanvas.width / 2;
         const centerY = this.guideCanvas.height / 2;
         
-        ctx.strokeStyle = 'rgba(147, 51, 234, 0.6)'; // 紫色
+        // ピンク系のグラデーション
+        const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
+        gradient.addColorStop(0, 'rgba(236, 72, 153, 0.4)'); // primary-500
+        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.2)'); // primary-500 薄い
+        
+        // 塗りつぶし色を設定
+        ctx.fillStyle = gradient;
+        ctx.strokeStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600
         ctx.lineWidth = 3;
-        ctx.setLineDash([10, 5]);
         
-        // 頭部（円）
-        const headRadius = 40;
+        // 頭部（円）- 塗りつぶし
+        const headRadius = 45;
         ctx.beginPath();
-        ctx.arc(centerX, centerY - 120, headRadius, 0, Math.PI * 2);
+        ctx.arc(centerX, centerY - 130, headRadius, 0, Math.PI * 2);
+        ctx.fill();
         ctx.stroke();
         
-        // 胴体（長方形）
-        const bodyWidth = 80;
-        const bodyHeight = 120;
+        // 胴体（角丸長方形）- 塗りつぶし
+        const bodyWidth = 90;
+        const bodyHeight = 130;
+        const bodyX = centerX - bodyWidth / 2;
+        const bodyY = centerY - 90;
+        const radius = 20;
+        
         ctx.beginPath();
-        ctx.rect(centerX - bodyWidth / 2, centerY - 80, bodyWidth, bodyHeight);
+        ctx.moveTo(bodyX + radius, bodyY);
+        ctx.lineTo(bodyX + bodyWidth - radius, bodyY);
+        ctx.quadraticCurveTo(bodyX + bodyWidth, bodyY, bodyX + bodyWidth, bodyY + radius);
+        ctx.lineTo(bodyX + bodyWidth, bodyY + bodyHeight - radius);
+        ctx.quadraticCurveTo(bodyX + bodyWidth, bodyY + bodyHeight, bodyX + bodyWidth - radius, bodyY + bodyHeight);
+        ctx.lineTo(bodyX + radius, bodyY + bodyHeight);
+        ctx.quadraticCurveTo(bodyX, bodyY + bodyHeight, bodyX, bodyY + bodyHeight - radius);
+        ctx.lineTo(bodyX, bodyY + radius);
+        ctx.quadraticCurveTo(bodyX, bodyY, bodyX + radius, bodyY);
+        ctx.closePath();
+        ctx.fill();
         ctx.stroke();
         
-        // 腕（線）
-        ctx.beginPath();
+        // 腕（太い線で描画）
+        ctx.lineWidth = 15;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(219, 39, 119, 0.6)'; // primary-600
+        
         // 左腕
-        ctx.moveTo(centerX - bodyWidth / 2, centerY - 60);
-        ctx.lineTo(centerX - bodyWidth - 30, centerY - 20);
-        // 右腕
-        ctx.moveTo(centerX + bodyWidth / 2, centerY - 60);
-        ctx.lineTo(centerX + bodyWidth + 30, centerY - 20);
-        ctx.stroke();
-        
-        // 脚（線）
         ctx.beginPath();
-        // 左脚
-        ctx.moveTo(centerX - 20, centerY + 40);
-        ctx.lineTo(centerX - 30, centerY + 120);
-        // 右脚
-        ctx.moveTo(centerX + 20, centerY + 40);
-        ctx.lineTo(centerX + 30, centerY + 120);
+        ctx.moveTo(centerX - bodyWidth / 2, centerY - 50);
+        ctx.lineTo(centerX - bodyWidth - 25, centerY - 10);
         ctx.stroke();
         
-        // 説明テキスト
-        ctx.setLineDash([]);
-        ctx.fillStyle = 'rgba(147, 51, 234, 0.8)';
-        ctx.font = '16px Noto Sans JP';
+        // 右腕
+        ctx.beginPath();
+        ctx.moveTo(centerX + bodyWidth / 2, centerY - 50);
+        ctx.lineTo(centerX + bodyWidth + 25, centerY - 10);
+        ctx.stroke();
+        
+        // 脚（太い線で描画）
+        ctx.lineWidth = 18;
+        
+        // 左脚
+        ctx.beginPath();
+        ctx.moveTo(centerX - 25, centerY + 40);
+        ctx.lineTo(centerX - 35, centerY + 130);
+        ctx.stroke();
+        
+        // 右脚
+        ctx.beginPath();
+        ctx.moveTo(centerX + 25, centerY + 40);
+        ctx.lineTo(centerX + 35, centerY + 130);
+        ctx.stroke();
+        
+        // 手と足（小さな円）
+        ctx.fillStyle = 'rgba(219, 39, 119, 0.8)';
+        
+        // 左手
+        ctx.beginPath();
+        ctx.arc(centerX - bodyWidth - 25, centerY - 10, 12, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 右手
+        ctx.beginPath();
+        ctx.arc(centerX + bodyWidth + 25, centerY - 10, 12, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 左足
+        ctx.beginPath();
+        ctx.arc(centerX - 35, centerY + 130, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 右足
+        ctx.beginPath();
+        ctx.arc(centerX + 35, centerY + 130, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 説明テキスト（ピンク系）
+        ctx.fillStyle = 'rgba(219, 39, 119, 0.9)'; // primary-600
+        ctx.font = 'bold 18px M PLUS Rounded 1c';
         ctx.textAlign = 'center';
-        ctx.fillText('ガイドに体を合わせてください', centerX, 30);
+        ctx.fillText('💕 ピンクのガイドに体を合わせてね ✨', centerX, 40);
+        
+        // サブテキスト
+        ctx.fillStyle = 'rgba(236, 72, 153, 0.8)'; // primary-500
+        ctx.font = '14px M PLUS Rounded 1c';
+        ctx.fillText('全身が見えるように立ってください 🌸', centerX, centerY + 180);
     }
     
     // 写真を撮影
