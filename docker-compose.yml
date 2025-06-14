@@ -46,3 +46,14 @@ services:
     environment:
       - CI=true
     command: sh -c "npm install && npm run test:run"
+
+  # Playwright E2Eテスト環境
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.53.0-jammy
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    environment:
+      - CI=true
+      - HOME=/tmp
+    command: sh -c "npm install && npm run test:e2e"

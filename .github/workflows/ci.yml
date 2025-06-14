@@ -44,15 +44,15 @@ jobs:
           cd posture-diagnosis
           npm run build
           
-      - name: Install Playwright Browsers
+      - name: E2E tests (Docker)
         run: |
-          cd posture-diagnosis
-          npx playwright install chromium --with-deps
-          
-      - name: E2E tests
-        run: |
-          cd posture-diagnosis
-          npm run test:e2e -- --project=chromium
+          docker run --rm \
+            -v ${{ github.workspace }}/posture-diagnosis:/app \
+            -w /app \
+            -e CI=true \
+            -e HOME=/tmp \
+            mcr.microsoft.com/playwright:v1.53.0-jammy \
+            sh -c "npm install && npm run test:e2e"
           
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4

@@ -42,8 +42,8 @@ test-unit:
 
 # E2Eテスト実行
 test-e2e:
-	@echo "Setting up E2E test environment..."
-	docker-compose run --rm node-test bash -c "npx playwright install chromium && npm run test:e2e"
+	@echo "Running E2E tests with Playwright official container..."
+	docker-compose run --rm playwright
 
 # コードリンティング
 lint:

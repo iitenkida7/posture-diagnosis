@@ -20,7 +20,7 @@ test.describe('基本E2Eテスト', () => {
     // 診断開始ボタンをクリック
     await page.click('#startBtn')
     
-    // カメラセクションが表示されるまで待機（カメラ許可は無視）
+    // カメラセクションが表示されるまで待機
     await expect(page.locator('#camera')).toBeVisible()
   })
 })
