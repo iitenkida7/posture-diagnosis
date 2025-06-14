@@ -18,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - コンパイルなどは、Docker を利用して環境を汚さないように配慮。
 - Node.jsコンテナに統一（TypeScriptコンパイル、HTTPサーバー両方）
+- Docker Composeで複雑なコマンドを管理（docker-compose.yml）
 - あとで簡単に実行できるよう、頻度が高そうなコマンド群は、Makefile に自動で記載して管理。
 - 技術スタックや開発環境の会話がなされたときには、CLAUDE.md に自動で追加する。
 

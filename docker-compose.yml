@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  node:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    ports:
+      - "8000:8000"
+    command: sh -c "npm install -g typescript && tsc"
+
+  node-serve:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    ports:
+      - "8000:8000"
+    command: sh -c "npm install -g http-server && http-server -p 8000"
+
+  node-watch:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    stdin_open: true
+    tty: true
+    command: sh -c "npm install -g typescript && tsc --watch"

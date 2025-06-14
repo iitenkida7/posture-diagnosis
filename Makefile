@@ -10,11 +10,11 @@ help:
 # みんなの姿勢診断
 .PHONY: build
 build:
-	docker run --rm -v "$$(pwd)/posture-diagnosis:/app" -w /app node:18-alpine sh -c "npm install -g typescript && tsc"
+	docker compose run --rm node
 
 .PHONY: serve
 serve: build
-	docker run --rm -v "$$(pwd)/posture-diagnosis:/app" -w /app -p 8000:8000 node:18-alpine sh -c "npm install -g http-server && http-server -p 8000"
+	docker compose run --rm --service-ports node-serve
 
 .PHONY: clean
 clean:
@@ -22,4 +22,4 @@ clean:
 
 .PHONY: watch
 watch:
-	docker run --rm -it -v "$$(pwd)/posture-diagnosis:/app" -w /app node:18-alpine sh -c "npm install -g typescript && tsc --watch"
+	docker compose run --rm node-watch
