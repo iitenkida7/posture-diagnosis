@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI - Tests and Quality Checks"]
     branches: [ main ]
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -15,8 +18,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # デプロイ実行（CIは別途実行済み）
+  # デプロイ実行（CIテスト完了後）
   deploy:
+    # CIが成功した場合のみ実行
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -43,8 +48,6 @@ jobs:
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        with:
-          enablement: true
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
