@@ -92,46 +92,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const resultContent = document.getElementById('resultContent');
         if (!resultContent) return;
         
-        // スコアに応じた色を決定
-        const scoreColor = result.score >= 80 ? 'text-green-600' : 
-                          result.score >= 60 ? 'text-yellow-600' : 'text-red-600';
+        // スコアに応じた色を決定（戦略的カラーパレット使用）
+        const scoreColor = result.score >= 80 ? 'text-success-600' : 
+                          result.score >= 60 ? 'text-warning-500' : 'text-error-500';
         
         resultContent.innerHTML = `
             <div class="text-center mb-10">
-                <h3 class="text-4xl font-bold mb-6 text-pink-700">💖 ${result.name} 💖</h3>
-                <div class="inline-flex items-center justify-center w-40 h-40 rounded-full bg-pink-100 mb-6 sparkle" style="background: linear-gradient(135deg, #ffc0cb, #ffb6c1); border: 4px solid #ff69b4;">
+                <h3 class="text-4xl font-bold mb-6 text-primary-700">💖 ${result.name} 💖</h3>
+                <div class="icon-cute w-40 h-40 mb-6 mx-auto border-4 border-primary-400">
                     <span class="text-6xl font-bold ${scoreColor}">${result.score}</span>
                 </div>
-                <p class="text-lg text-pink-600 font-semibold">${result.description}</p>
+                <p class="text-lg text-primary-600 font-semibold">${result.description}</p>
             </div>
             
             ${result.problems.length > 0 ? `
-                <div class="mb-10 bg-red-50 p-6 rounded-3xl border-2 border-red-200">
-                    <h4 class="text-2xl font-bold mb-6 text-red-700 text-center">
+                <div class="mb-10 bg-error-50 p-6 rounded-super-cute border-2 border-error-200">
+                    <h4 class="text-2xl font-bold mb-6 text-error-700 text-center">
                         <span class="text-3xl mr-2">😰</span>
                         ちょっと気をつけたい症状
                     </h4>
                     <ul class="space-y-4">
                         ${result.problems.map(problem => `
-                            <li class="flex items-start bg-white p-4 rounded-2xl">
-                                <span class="text-red-500 mr-3 text-2xl">⚠️</span>
-                                <span class="text-red-700 font-semibold text-lg">${problem}</span>
+                            <li class="flex items-start bg-white p-4 rounded-cute shadow-sm">
+                                <span class="text-error-500 mr-3 text-2xl">⚠️</span>
+                                <span class="text-error-700 font-semibold text-lg">${problem}</span>
                             </li>
                         `).join('')}
                     </ul>
                 </div>
             ` : ''}
             
-            <div class="bg-green-50 p-6 rounded-3xl border-2 border-green-200">
-                <h4 class="text-2xl font-bold mb-6 text-green-700 text-center">
+            <div class="bg-success-50 p-6 rounded-super-cute border-2 border-success-200">
+                <h4 class="text-2xl font-bold mb-6 text-success-700 text-center">
                     <span class="text-3xl mr-2">✨</span>
                     可愛く改善しちゃお！
                 </h4>
                 <ul class="space-y-4">
                     ${result.recommendations.map(rec => `
-                        <li class="flex items-start bg-white p-4 rounded-2xl">
-                            <span class="text-green-500 mr-3 text-2xl">💕</span>
-                            <span class="text-green-700 font-semibold text-lg">${rec}</span>
+                        <li class="flex items-start bg-white p-4 rounded-cute shadow-sm">
+                            <span class="text-success-500 mr-3 text-2xl">💕</span>
+                            <span class="text-success-700 font-semibold text-lg">${rec}</span>
                         </li>
                     `).join('')}
                 </ul>
