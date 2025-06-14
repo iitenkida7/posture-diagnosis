@@ -24,6 +24,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **ローカル Node.js 不要** - 全ての開発作業を Docker 経由で実行
 - 技術スタックや開発環境の会話がなされたときには、CLAUDE.md に自動で追加する
 
+## Git フロー
+
+- **GitHub Flow 開発** - main への直コミット禁止
+- 機能開発・バグ修正は feature ブランチで作業
+- Pull Request 経由で main ブランチにマージ
+- main ブランチは常にデプロイ可能な状態を維持
+
 ## 現在のプロジェクト
 
 ### みんなの姿勢診断 (posture-diagnosis/)

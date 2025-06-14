@@ -4,6 +4,7 @@ import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
   root: './',
+  base: '/posture-diagnosis/',
   build: {
     outDir: 'dist',
     rollupOptions: {
