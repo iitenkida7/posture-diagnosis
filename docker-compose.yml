@@ -1,5 +1,4 @@
 services:
-
   # 依存関係インストール
   node-install:
     image: node:18-alpine
@@ -15,7 +14,7 @@ services:
     volumes:
       - ./posture-diagnosis:/app
     ports:
-      - "8001:8000"
+      - "8000:8000"
     stdin_open: true
     tty: true
     command: sh -c "npm install && npm run dev"
@@ -37,4 +36,3 @@ services:
     ports:
       - "4173:4173"
     command: sh -c "npm install && npm run preview"
-

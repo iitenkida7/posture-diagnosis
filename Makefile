@@ -5,7 +5,7 @@
 # デフォルトターゲット
 help:
 	@echo "利用可能なコマンド（全てDocker経由）:"
-	@echo "  make dev     - 開発サーバー起動（http://localhost:8001）"
+	@echo "  make dev     - 開発サーバー起動（http://localhost:8000）"
 	@echo "  make build   - プロダクションビルド"
 	@echo "  make preview - ビルド版プレビューサーバー"
 	@echo "  make install - 依存関係のインストール"
