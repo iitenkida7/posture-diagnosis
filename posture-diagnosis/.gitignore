@@ -10,13 +10,16 @@ Thumbs.db
 
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build
 dist/
 assets/js/
 assets/css/output.css
 *.log
+
+# Test artifacts
+test-results/
+playwright-report/
 
 # Environment
 .env

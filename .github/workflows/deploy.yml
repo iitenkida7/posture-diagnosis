@@ -1,0 +1,102 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # テスト実行（CI workflow から結果を参照）
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: |
+          cd posture-diagnosis
+          npm ci
+          
+      - name: Type check
+        run: |
+          cd posture-diagnosis
+          npm run type-check
+          
+      - name: Lint
+        run: |
+          cd posture-diagnosis
+          npm run lint
+          
+      - name: Unit tests
+        run: |
+          cd posture-diagnosis
+          npm run test:run
+          
+      - name: Build test
+        run: |
+          cd posture-diagnosis
+          npm run build
+          
+      - name: Basic E2E smoke test (Docker)
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/posture-diagnosis:/app \
+            -w /app \
+            -e CI=true \
+            -e HOME=/tmp \
+            mcr.microsoft.com/playwright:v1.53.0-jammy \
+            sh -c "npm install && npm run test:e2e"
+
+  # デプロイ実行
+  deploy:
+    needs: test
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: |
+          cd posture-diagnosis
+          npm ci
+          
+      - name: Build
+        run: |
+          cd posture-diagnosis
+          npm run build
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'posture-diagnosis/dist'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

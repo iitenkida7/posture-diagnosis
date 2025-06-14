@@ -24,6 +24,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **ローカル Node.js 不要** - 全ての開発作業を Docker 経由で実行
 - 技術スタックや開発環境の会話がなされたときには、CLAUDE.md に自動で追加する
 
+## Git フロー
+
+- **GitHub Flow 開発** - main への直コミット禁止
+- 機能開発・バグ修正は feature ブランチで作業
+- Pull Request 経由で main ブランチにマージ
+- main ブランチは常にデプロイ可能な状態を維持
+
+## テスト戦略
+
+- **包括的テストカバレッジ** - ユニット・統合・E2E テスト
+- **Vitest** - 高速ユニットテスト（TypeScript、ESM 対応）
+- **Playwright** - クロスブラウザ E2E テスト（Chrome、Firefox、Safari、モバイル）
+- **GitHub Actions 分離** - CI（テスト）とCD（デプロイ）を明確に分離
+- **Docker テスト統一** - ローカル・CI 環境の一致
+- **品質ゲート** - lint、型チェック、テスト全通過が必須
+
+## GitHub Actions 構成
+
+- **`.github/workflows/ci.yml`** - 全ブランチでテスト実行（PR・push時）
+- **`.github/workflows/deploy.yml`** - mainブランチのみデプロイ（テスト通過後）
+
+## 品質チェック
+
+- **型安全性確保** - TypeScript 厳格モード、型エラーゼロ
+- **ビルド成功確認** - Vite プロダクションビルド正常完了
+- **包括的テスト** - 30のユニットテスト（DOM、カメラ、姿勢分析、統合テスト）
+- **テスト自動化** - モック化によるテスト環境の安定化
+- **CI/CD統合** - GitHub Actions での自動テスト実行
+
 ## 現在のプロジェクト
 
 ### みんなの姿勢診断 (posture-diagnosis/)
@@ -38,6 +67,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `make build` - プロダクションビルド
   - `make preview` - ビルド版プレビューサーバー
   - `make install` - 依存関係インストール
+  - `make test` - ユニットテスト実行（30テスト）
+  - `make test-unit` - ユニットテスト実行
+  - `make test-e2e` - E2Eテスト実行（ブラウザ自動インストール）
+  - `make lint` - コードリンティング（型チェック推奨）
+  - `make type-check` - TypeScript型チェック
 
 ## Code Architecture
 
