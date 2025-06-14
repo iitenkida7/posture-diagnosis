@@ -31,6 +31,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Pull Request 経由で main ブランチにマージ
 - main ブランチは常にデプロイ可能な状態を維持
 
+## テスト戦略
+
+- **包括的テストカバレッジ** - ユニット・統合・E2E テスト
+- **Vitest** - 高速ユニットテスト（TypeScript、ESM 対応）
+- **Playwright** - クロスブラウザ E2E テスト（Chrome、Firefox、Safari、モバイル）
+- **GitHub Actions 分離** - CI（テスト）とCD（デプロイ）を明確に分離
+- **Docker テスト統一** - ローカル・CI 環境の一致
+- **品質ゲート** - lint、型チェック、テスト全通過が必須
+
+## GitHub Actions 構成
+
+- **`.github/workflows/ci.yml`** - 全ブランチでテスト実行（PR・push時）
+- **`.github/workflows/deploy.yml`** - mainブランチのみデプロイ（テスト通過後）
+
+## 品質チェック
+
+- **型安全性確保** - TypeScript 厳格モード、型エラーゼロ
+- **ビルド成功確認** - Vite プロダクションビルド正常完了
+- **基本テスト通過** - DOM操作、文字列・配列操作、環境確認
+
 ## 現在のプロジェクト
 
 ### みんなの姿勢診断 (posture-diagnosis/)
@@ -45,6 +65,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `make build` - プロダクションビルド
   - `make preview` - ビルド版プレビューサーバー
   - `make install` - 依存関係インストール
+  - `make test` - 全テスト実行（ユニット + E2E）
+  - `make test-unit` - ユニットテスト実行
+  - `make test-e2e` - E2Eテスト実行  
+  - `make lint` - コードリンティング
+  - `make type-check` - TypeScript型チェック
 
 ## Code Architecture
 

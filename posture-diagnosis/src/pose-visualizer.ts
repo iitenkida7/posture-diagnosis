@@ -101,7 +101,7 @@ export class PoseVisualizer {
             const point1 = keypoints.find(kp => kp.name === point1Name);
             const point2 = keypoints.find(kp => kp.name === point2Name);
             
-            if (point1 && point2 && point1.score > 0.3 && point2.score > 0.3) {
+            if (point1 && point2 && point1.score && point1.score > 0.3 && point2.score && point2.score > 0.3) {
                 this.ctx.beginPath();
                 this.ctx.moveTo(point1.x, point1.y);
                 this.ctx.lineTo(point2.x, point2.y);
@@ -116,7 +116,7 @@ export class PoseVisualizer {
     // 関節点を描画
     private drawKeypoints(keypoints: poseDetection.Keypoint[]): void {
         keypoints.forEach(point => {
-            if (point.score > 0.3) {
+            if (point.score && point.score > 0.3) {
                 // 信頼度に基づいて色を変更（グリーン系）
                 const alpha = point.score;
                 this.ctx.fillStyle = `rgba(22, 163, 74, ${alpha})`; // green-600
@@ -228,7 +228,7 @@ export class PoseVisualizer {
     }
 
     // 角度情報を表示
-    private drawAngleInfo(keypoints: poseDetection.Keypoint[], angles: any): void {
+    private drawAngleInfo(_keypoints: poseDetection.Keypoint[], angles: any): void {
         // 背景付きテキストボックス
         const infoX = 20;
         const infoY = 30;
