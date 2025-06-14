@@ -140,6 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (analysisResult) {
                     await displayResult(analysisResult);
+                    // 結果表示後にボタンを表示
+                    const resultButtons = document.getElementById('resultButtons');
+                    if (resultButtons) {
+                        resultButtons.style.display = 'flex';
+                    }
                 }
             } catch (error) {
                 console.error('姿勢分析エラー:', error);
@@ -180,6 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
         capturedImage = null;
         analysisResult = null;
         questionForm.reset();
+        
+        // ボタンを非表示に戻す
+        const resultButtons = document.getElementById('resultButtons');
+        if (resultButtons) {
+            resultButtons.style.display = 'none';
+        }
+        
         showSection(landingSection);
     });
 });
