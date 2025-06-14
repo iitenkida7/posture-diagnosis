@@ -1,0 +1,99 @@
+/* Tailwind CSS のベースインポート */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* カスタムベーススタイル */
+@layer base {
+  html {
+    font-family: 'M PLUS Rounded 1c', ui-sans-serif, system-ui, sans-serif;
+  }
+  
+  body {
+    @apply font-cute;
+    /* グラデーション背景 */
+    background: linear-gradient(135deg, #ffeef8 0%, #fff0f5 100%);
+    min-height: 100vh;
+  }
+}
+
+/* カスタムコンポーネント */
+@layer components {
+  /* 可愛いカード */
+  .card-cute {
+    @apply bg-white rounded-super-cute shadow-cute border-2 border-primary-200;
+  }
+  
+  /* 可愛いボタン */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-400 to-accent-400 text-white font-bold py-4 px-8 rounded-full;
+    @apply hover:scale-105 transition-all duration-200 shadow-cute;
+    box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+  }
+  
+  .btn-secondary {
+    @apply bg-primary-200 text-primary-700 font-bold py-4 px-8 rounded-full;
+    @apply hover:bg-primary-300 transition-colors duration-200;
+  }
+  
+  /* 可愛いボーダー */
+  .border-cute {
+    @apply border-2 border-primary-200 rounded-cute;
+  }
+  
+  /* 可愛いフォーム要素 */
+  .input-cute {
+    @apply w-full px-6 py-4 border-2 border-primary-200 rounded-cute;
+    @apply focus:outline-none focus:border-primary-400 text-primary-600 font-semibold;
+    @apply transition-colors duration-200;
+  }
+  
+  .select-cute {
+    @apply input-cute;
+  }
+  
+  .checkbox-cute {
+    @apply flex items-center bg-primary-50 p-4 rounded-cute border-2 border-primary-100;
+    @apply hover:border-primary-300 transition-colors duration-200 cursor-pointer;
+  }
+  
+  /* グラデーション背景 */
+  .gradient-primary {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+  
+  /* アニメーション */
+  .sparkle {
+    @apply animate-sparkle;
+  }
+  
+  /* アイコンスタイル */
+  .icon-cute {
+    @apply w-16 h-16 bg-gradient-to-br from-primary-300 to-primary-400 rounded-full;
+    @apply flex items-center justify-center text-3xl sparkle;
+  }
+}
+
+/* ユーティリティ */
+@layer utilities {
+  /* テキストグラデーション */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* ホバーエフェクト */
+  .hover-lift {
+    @apply hover:scale-105 transition-transform duration-200;
+  }
+  
+  .hover-glow {
+    @apply hover:shadow-cute-lg transition-shadow duration-200;
+  }
+}

@@ -10,10 +10,12 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+package-lock.json
 
 # Build
 dist/
 assets/js/
+assets/css/output.css
 *.log
 
 # Environment

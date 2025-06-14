@@ -1,15 +1,39 @@
 version: '3.8'
 
 services:
+  # TypeScriptコンパイル
   node:
     image: node:18-alpine
     working_dir: /app
     volumes:
       - ./posture-diagnosis:/app
-    ports:
-      - "8000:8000"
     command: sh -c "npm install -g typescript && tsc"
 
+  # CSSビルド
+  node-css:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    command: sh -c "npm install && npm run build:css"
+
+  # 統合ビルド
+  node-build:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    command: sh -c "npm install && npm run build"
+
+  # 依存関係インストール
+  node-install:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    command: npm install
+
+  # 開発サーバー
   node-serve:
     image: node:18-alpine
     working_dir: /app
@@ -19,6 +43,17 @@ services:
       - "8000:8000"
     command: sh -c "npm install -g http-server && http-server -p 8000"
 
+  # 開発モード（ウォッチ）
+  node-dev:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    stdin_open: true
+    tty: true
+    command: sh -c "npm install && npm run dev"
+
+  # TypeScript ウォッチ
   node-watch:
     image: node:18-alpine
     working_dir: /app

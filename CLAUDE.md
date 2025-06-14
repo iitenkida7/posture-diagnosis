@@ -26,10 +26,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### みんなの姿勢診断 (posture-diagnosis/)
 - カメラで姿勢を撮影して分析するWebアプリ
+- 女子大生向けのポップなピンクデザイン
+- 戦略的なカラーパレット管理（Tailwind CSS）
 - 主な開発コマンド（プロジェクトルートから実行）:
-  - `make serve` - 開発サーバー起動
-  - `make build` - TypeScriptコンパイル
-  - `make docker` - Docker環境でサーバー起動
+  - `make serve` - 開発サーバー起動（TypeScript/CSS自動ビルド）
+  - `make build` - TypeScript/CSSビルド
+  - `make build-css` - Tailwind CSSのみビルド
+  - `make dev` - 開発モード（ファイル監視）
+  - `make install` - 依存関係インストール
 
 ## Code Architecture
 

@@ -1,0 +1,21 @@
+{
+  "name": "posture-diagnosis",
+  "version": "1.0.0",
+  "description": "AI-powered posture analysis web application",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/styles/input.css -o ./assets/css/output.css",
+    "build:ts": "tsc",
+    "build": "npm run build:css && npm run build:ts",
+    "dev": "tailwindcss -i ./src/styles/input.css -o ./assets/css/output.css --watch & tsc --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "typescript": "^5.3.3"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}
