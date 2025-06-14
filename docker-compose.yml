@@ -1,29 +1,4 @@
-version: '3.8'
-
 services:
-  # TypeScriptコンパイル
-  node:
-    image: node:18-alpine
-    working_dir: /app
-    volumes:
-      - ./posture-diagnosis:/app
-    command: sh -c "npm install -g typescript && tsc"
-
-  # CSSビルド
-  node-css:
-    image: node:18-alpine
-    working_dir: /app
-    volumes:
-      - ./posture-diagnosis:/app
-    command: sh -c "npm install && npm run build:css"
-
-  # 統合ビルド
-  node-build:
-    image: node:18-alpine
-    working_dir: /app
-    volumes:
-      - ./posture-diagnosis:/app
-    command: sh -c "npm install && npm run build"
 
   # 依存関係インストール
   node-install:
@@ -33,32 +8,33 @@ services:
       - ./posture-diagnosis:/app
     command: npm install
 
-  # 開発サーバー
-  node-serve:
-    image: node:18-alpine
-    working_dir: /app
-    volumes:
-      - ./posture-diagnosis:/app
-    ports:
-      - "8000:8000"
-    command: sh -c "npm install -g http-server && http-server -p 8000"
-
-  # 開発モード（ウォッチ）
+  # Vite開発サーバー
   node-dev:
     image: node:18-alpine
     working_dir: /app
     volumes:
       - ./posture-diagnosis:/app
+    ports:
+      - "8001:8000"
     stdin_open: true
     tty: true
     command: sh -c "npm install && npm run dev"
 
-  # TypeScript ウォッチ
-  node-watch:
+  # Viteビルド
+  node-build:
     image: node:18-alpine
     working_dir: /app
     volumes:
       - ./posture-diagnosis:/app
-    stdin_open: true
-    tty: true
-    command: sh -c "npm install -g typescript && tsc --watch"
+    command: sh -c "npm install && npm run build"
+
+  # Viteプレビューサーバー
+  node-preview:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - ./posture-diagnosis:/app
+    ports:
+      - "4173:4173"
+    command: sh -c "npm install && npm run preview"
+

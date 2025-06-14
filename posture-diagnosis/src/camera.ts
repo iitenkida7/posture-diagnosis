@@ -4,13 +4,13 @@ export class CameraManager {
     private canvas: HTMLCanvasElement;
     private guideCanvas: HTMLCanvasElement;
     private stream: MediaStream | null = null;
-    
+
     constructor() {
         this.video = document.getElementById('videoElement') as HTMLVideoElement;
         this.canvas = document.createElement('canvas');
         this.guideCanvas = document.getElementById('guideCanvas') as HTMLCanvasElement;
     }
-    
+
     // カメラの初期化
     async initialize(): Promise<void> {
         try {
@@ -22,60 +22,60 @@ export class CameraManager {
                     facingMode: 'user' // フロントカメラを使用
                 }
             });
-            
+
             this.video.srcObject = this.stream;
-            
+
             // ビデオのメタデータが読み込まれたら、ガイドを描画
             this.video.addEventListener('loadedmetadata', () => {
                 this.drawGuide();
             });
-            
+
         } catch (error) {
             console.error('カメラの初期化に失敗しました:', error);
             alert('カメラへのアクセスが許可されませんでした。');
         }
     }
-    
+
     // ガイドラインの描画
     private drawGuide(): void {
         const ctx = this.guideCanvas.getContext('2d');
         if (!ctx) return;
-        
+
         // キャンバスのサイズをビデオに合わせる
         this.guideCanvas.width = this.video.videoWidth;
         this.guideCanvas.height = this.video.videoHeight;
-        
+
         // クリア
         ctx.clearRect(0, 0, this.guideCanvas.width, this.guideCanvas.height);
-        
+
         // 人型のガイドを描画（ピンク系の塗りつぶし）
         const centerX = this.guideCanvas.width / 2;
         const centerY = this.guideCanvas.height / 2;
-        
+
         // ピンク系のグラデーション（より濃く）
         const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
         gradient.addColorStop(0, 'rgba(236, 72, 153, 0.7)'); // primary-500 濃く
         gradient.addColorStop(1, 'rgba(236, 72, 153, 0.5)'); // primary-500 中間
-        
+
         // 塗りつぶし色を設定
         ctx.fillStyle = gradient;
         ctx.strokeStyle = 'rgba(219, 39, 119, 1.0)'; // primary-600 完全不透明
         ctx.lineWidth = 4;
-        
+
         // 頭部（円）- 塗りつぶし
         const headRadius = 45;
         ctx.beginPath();
         ctx.arc(centerX, centerY - 130, headRadius, 0, Math.PI * 2);
         ctx.fill();
         ctx.stroke();
-        
+
         // 胴体（角丸長方形）- 塗りつぶし
         const bodyWidth = 90;
         const bodyHeight = 130;
         const bodyX = centerX - bodyWidth / 2;
         const bodyY = centerY - 90;
         const radius = 20;
-        
+
         ctx.beginPath();
         ctx.moveTo(bodyX + radius, bodyY);
         ctx.lineTo(bodyX + bodyWidth - radius, bodyY);
@@ -89,94 +89,94 @@ export class CameraManager {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        
+
         // 腕（太い線で描画）
         ctx.lineWidth = 18;
         ctx.lineCap = 'round';
         ctx.strokeStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600 濃く
-        
+
         // 左腕
         ctx.beginPath();
         ctx.moveTo(centerX - bodyWidth / 2, centerY - 50);
         ctx.lineTo(centerX - bodyWidth - 25, centerY - 10);
         ctx.stroke();
-        
+
         // 右腕
         ctx.beginPath();
         ctx.moveTo(centerX + bodyWidth / 2, centerY - 50);
         ctx.lineTo(centerX + bodyWidth + 25, centerY - 10);
         ctx.stroke();
-        
+
         // 脚（太い線で描画）
         ctx.lineWidth = 20;
-        
+
         // 左脚
         ctx.beginPath();
         ctx.moveTo(centerX - 25, centerY + 40);
         ctx.lineTo(centerX - 35, centerY + 130);
         ctx.stroke();
-        
+
         // 右脚
         ctx.beginPath();
         ctx.moveTo(centerX + 25, centerY + 40);
         ctx.lineTo(centerX + 35, centerY + 130);
         ctx.stroke();
-        
+
         // 手と足（小さな円）
         ctx.fillStyle = 'rgba(219, 39, 119, 0.9)';
-        
+
         // 左手
         ctx.beginPath();
         ctx.arc(centerX - bodyWidth - 25, centerY - 10, 12, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // 右手
         ctx.beginPath();
         ctx.arc(centerX + bodyWidth + 25, centerY - 10, 12, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // 左足
         ctx.beginPath();
         ctx.arc(centerX - 35, centerY + 130, 15, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // 右足
         ctx.beginPath();
         ctx.arc(centerX + 35, centerY + 130, 15, 0, Math.PI * 2);
         ctx.fill();
-        
+
         // 説明テキスト（ピンク系）
         ctx.fillStyle = 'rgba(219, 39, 119, 0.9)'; // primary-600
         ctx.font = 'bold 18px M PLUS Rounded 1c';
         ctx.textAlign = 'center';
         ctx.fillText('💕 ピンクのガイドに体を合わせてね ✨', centerX, 40);
-        
+
         // サブテキスト
         ctx.fillStyle = 'rgba(236, 72, 153, 0.8)'; // primary-500
         ctx.font = '14px M PLUS Rounded 1c';
         ctx.fillText('全身が見えるように立ってください 🌸', centerX, centerY + 180);
     }
-    
+
     // 写真を撮影
     capture(): string | null {
         if (!this.video.videoWidth || !this.video.videoHeight) {
             return null;
         }
-        
+
         // キャンバスのサイズを設定
         this.canvas.width = this.video.videoWidth;
         this.canvas.height = this.video.videoHeight;
-        
+
         // ビデオフレームをキャンバスに描画
         const ctx = this.canvas.getContext('2d');
         if (!ctx) return null;
-        
+
         ctx.drawImage(this.video, 0, 0);
-        
+
         // 画像データをbase64形式で取得
         return this.canvas.toDataURL('image/jpeg', 0.8);
     }
-    
+
     // カメラを停止
     stop(): void {
         if (this.stream) {

@@ -2,13 +2,14 @@
   "name": "posture-diagnosis",
   "version": "1.0.0",
   "description": "AI-powered posture analysis web application",
+  "type": "module",
   "scripts": {
-    "build:css": "tailwindcss -i ./src/styles/input.css -o ./assets/css/output.css",
-    "build:ts": "tsc",
-    "build": "npm run build:css && npm run build:ts",
-    "dev": "tailwindcss -i ./src/styles/input.css -o ./assets/css/output.css --watch & tsc --watch"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "vite": "^5.0.0",
     "tailwindcss": "^3.4.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
