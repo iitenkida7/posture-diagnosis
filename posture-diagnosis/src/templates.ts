@@ -5,16 +5,16 @@ import { PoseVisualizer } from './pose-visualizer.js';
 export class ResultTemplates {
     // メイン結果テンプレート
     static async generateResultHTML(result: PostureInfo, capturedImage: string | null = null): Promise<string> {
-        const scoreColor = result.score >= 80 ? 'text-success-600' : 
-                          result.score >= 60 ? 'text-warning-500' : 'text-error-500';
-        
+        const scoreColor = result.score >= 80 ? 'text-success-600' :
+            result.score >= 60 ? 'text-warning-500' : 'text-error-500';
+
         // 姿勢可視化画像を生成
         let annotatedImage = capturedImage;
         if (capturedImage && result.visualizationData) {
             try {
                 const visualizer = new PoseVisualizer();
                 annotatedImage = await visualizer.generateAnnotatedImage(
-                    capturedImage, 
+                    capturedImage,
                     result.visualizationData
                 );
                 visualizer.destroy();
@@ -23,33 +23,31 @@ export class ResultTemplates {
                 // エラー時は元画像を使用
             }
         }
-        
+
         return `
             ${this.generateHeader(result, scoreColor)}
             ${annotatedImage ? this.generateImageSection(annotatedImage, result.visualizationData) : ''}
             ${this.generateProblemsAndRecommendations(result.problems, result.recommendations)}
         `;
     }
-    
+
     // ヘッダー部分（スコアと名前）
     private static generateHeader(result: PostureInfo, scoreColor: string): string {
         return `
             <div class="text-center mb-10">
                 <h3 class="text-4xl font-bold mb-6 text-primary-700">💖 ${result.name} 💖</h3>
-                <div class="icon-cute w-40 h-40 mb-6 mx-auto border-4 border-primary-400">
-                    <span class="text-6xl font-bold ${scoreColor}">${result.score}</span>
-                </div>
+                    <span class="text-6xl font-bold ${scoreColor}">${result.score}点</span>
                 <p class="text-lg text-primary-600 font-semibold">${result.description}</p>
             </div>
         `;
     }
-    
+
     // 撮影画像セクション（可視化版）
     private static generateImageSection(capturedImage: string, visualizationData?: any): string {
         const hasVisualization = visualizationData && visualizationData.keypoints.length > 0;
         const title = hasVisualization ? '🤖 AI姿勢分析結果' : '📸 撮影した写真';
-        const description = hasVisualization 
-            ? '✨ 骨格線と問題箇所をAIが自動検出しました 💕' 
+        const description = hasVisualization
+            ? '✨ 骨格線と問題箇所をAIが自動検出しました 💕'
             : '✨ この写真を分析しました 💕';
 
         return `
@@ -94,7 +92,7 @@ export class ResultTemplates {
             </div>
         `;
     }
-    
+
     // 問題点セクション
     private static generateProblems(problems: string[]): string {
         if (problems.length === 0) {
@@ -112,7 +110,7 @@ export class ResultTemplates {
                 </div>
             `;
         }
-        
+
         return `
             <div class="bg-error-50 p-6 rounded-super-cute border-2 border-error-200">
                 <h4 class="text-2xl font-bold mb-6 text-error-700 text-center">
@@ -125,7 +123,7 @@ export class ResultTemplates {
             </div>
         `;
     }
-    
+
     // 問題点アイテム
     private static generateProblemItem(problem: string): string {
         return `
@@ -135,7 +133,7 @@ export class ResultTemplates {
             </li>
         `;
     }
-    
+
     // 改善提案セクション
     private static generateRecommendations(recommendations: string[]): string {
         return `
@@ -150,7 +148,7 @@ export class ResultTemplates {
             </div>
         `;
     }
-    
+
     // 改善提案アイテム
     private static generateRecommendationItem(recommendation: string): string {
         return `
