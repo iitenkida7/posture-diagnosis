@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- ヘッダー -->
-    <header class="bg-white shadow-sm sticky top-0 z-50 border-cute border-b-4 border-b-primary-300 rounded-b-cute">
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b-4 border-b-primary-300 rounded-b-cute">
         <nav class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-primary-600">✨ みんなの姿勢診断 💕</h1>
@@ -78,22 +78,22 @@
         <!-- カメラ撮影画面 -->
         <section id="camera" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
             <div class="max-w-4xl mx-auto w-full">
-                <h2 class="text-3xl font-bold text-center mb-8 text-pink-700">📸 可愛く撮影しちゃお！ ✨</h2>
-                <div class="bg-white rounded-3xl card-shadow p-8 cute-border">
+                <h2 class="text-3xl font-bold text-center mb-8 text-primary-700">📸 可愛く撮影しちゃお！ ✨</h2>
+                <div class="card-cute p-8">
                     <div class="mb-6">
-                        <p class="text-center text-pink-600 mb-4 text-lg">
+                        <p class="text-center text-primary-600 mb-4 text-lg">
                             💕 ピンクのガイドに体を合わせてポーズ！ 🌸
                         </p>
-                        <div class="relative mx-auto cute-border" style="max-width: 640px;">
+                        <div class="relative mx-auto border-cute max-w-2xl">
                             <video id="videoElement" class="w-full rounded-2xl" autoplay playsinline></video>
                             <canvas id="guideCanvas" class="absolute top-0 left-0 w-full h-full pointer-events-none rounded-2xl"></canvas>
                         </div>
                     </div>
                     <div class="flex justify-center space-x-6">
-                        <button id="captureBtn" class="pink-gradient text-white px-8 py-4 rounded-full hover:scale-105 transition transform font-bold text-lg shadow-lg">
+                        <button id="captureBtn" class="btn-primary text-lg">
                             📸 パシャッと撮影 ✨
                         </button>
-                        <button id="backBtn" class="bg-pink-200 text-pink-700 px-8 py-4 rounded-full hover:bg-pink-300 transition font-bold text-lg">
+                        <button id="backBtn" class="btn-secondary">
                             🔙 戻る
                         </button>
                     </div>
@@ -104,15 +104,15 @@
         <!-- アンケート画面 -->
         <section id="questionnaire" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
             <div class="max-w-2xl mx-auto w-full">
-                <h2 class="text-3xl font-bold text-center mb-8 text-pink-700">💖 あなたのこと教えて！ ✨</h2>
-                <div class="bg-white rounded-3xl card-shadow p-8 cute-border">
+                <h2 class="text-3xl font-bold text-center mb-8 text-primary-700">💖 あなたのこと教えて！ ✨</h2>
+                <div class="card-cute p-8">
                     <form id="questionForm">
                         <div class="space-y-8">
                             <div>
-                                <label class="block text-pink-700 font-bold mb-3 text-lg">
+                                <label class="block text-primary-700 font-bold mb-3 text-lg">
                                     💻 1日のお勉強・お仕事時間は？
                                 </label>
-                                <select name="deskwork" class="w-full px-6 py-4 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 text-pink-600 font-semibold">
+                                <select name="deskwork" class="select-cute">
                                     <option value="">選択してね 💕</option>
                                     <option value="less-2">📚 2時間未満（短めちゃん）</option>
                                     <option value="2-4">📖 2〜4時間（普通かな）</option>
@@ -122,10 +122,10 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-pink-700 font-bold mb-3 text-lg">
+                                <label class="block text-primary-700 font-bold mb-3 text-lg">
                                     🏃‍♀️ 運動はどのくらいしてる？
                                 </label>
-                                <select name="exercise" class="w-full px-6 py-4 border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 text-pink-600 font-semibold">
+                                <select name="exercise" class="select-cute">
                                     <option value="">教えて 🌸</option>
                                     <option value="none">😅 ほとんどしてない（運動苦手）</option>
                                     <option value="weekly-1">🚶‍♀️ 週1回程度（たまに散歩）</option>
@@ -135,35 +135,35 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-pink-700 font-bold mb-4 text-lg">
+                                <label class="block text-primary-700 font-bold mb-4 text-lg">
                                     😖 よくある体の不調は？（当てはまるもの全部選んでね）
                                 </label>
                                 <div class="space-y-3">
-                                    <label class="flex items-center bg-pink-50 p-3 rounded-2xl border-2 border-pink-100 hover:border-pink-300 transition cursor-pointer">
-                                        <input type="checkbox" class="mr-3 text-pink-500" value="shoulder">
-                                        <span class="text-pink-700 font-semibold">😤 肩こり（つらいよね）</span>
+                                    <label class="checkbox-cute">
+                                        <input type="checkbox" class="mr-3 text-primary-500" value="shoulder">
+                                        <span class="text-primary-700 font-semibold">😤 肩こり（つらいよね）</span>
                                     </label>
-                                    <label class="flex items-center bg-pink-50 p-3 rounded-2xl border-2 border-pink-100 hover:border-pink-300 transition cursor-pointer">
-                                        <input type="checkbox" class="mr-3 text-pink-500" value="back">
-                                        <span class="text-pink-700 font-semibold">😣 腰痛（立ち上がるとき痛い）</span>
+                                    <label class="checkbox-cute">
+                                        <input type="checkbox" class="mr-3 text-primary-500" value="back">
+                                        <span class="text-primary-700 font-semibold">😣 腰痛（立ち上がるとき痛い）</span>
                                     </label>
-                                    <label class="flex items-center bg-pink-50 p-3 rounded-2xl border-2 border-pink-100 hover:border-pink-300 transition cursor-pointer">
-                                        <input type="checkbox" class="mr-3 text-pink-500" value="neck">
-                                        <span class="text-pink-700 font-semibold">😵 首の痛み（スマホ見すぎ？）</span>
+                                    <label class="checkbox-cute">
+                                        <input type="checkbox" class="mr-3 text-primary-500" value="neck">
+                                        <span class="text-primary-700 font-semibold">😵 首の痛み（スマホ見すぎ？）</span>
                                     </label>
-                                    <label class="flex items-center bg-pink-50 p-3 rounded-2xl border-2 border-pink-100 hover:border-pink-300 transition cursor-pointer">
-                                        <input type="checkbox" class="mr-3 text-pink-500" value="headache">
-                                        <span class="text-pink-700 font-semibold">🤕 頭痛（ズキズキ）</span>
+                                    <label class="checkbox-cute">
+                                        <input type="checkbox" class="mr-3 text-primary-500" value="headache">
+                                        <span class="text-primary-700 font-semibold">🤕 頭痛（ズキズキ）</span>
                                     </label>
-                                    <label class="flex items-center bg-pink-50 p-3 rounded-2xl border-2 border-pink-100 hover:border-pink-300 transition cursor-pointer">
-                                        <input type="checkbox" class="mr-3 text-pink-500" value="eye">
-                                        <span class="text-pink-700 font-semibold">👁️ 眼精疲労（目がしょぼしょぼ）</span>
+                                    <label class="checkbox-cute">
+                                        <input type="checkbox" class="mr-3 text-primary-500" value="eye">
+                                        <span class="text-primary-700 font-semibold">👁️ 眼精疲労（目がしょぼしょぼ）</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-10 flex justify-center">
-                            <button type="submit" class="pink-gradient text-white px-12 py-5 rounded-full hover:scale-105 transition transform font-bold text-xl shadow-lg">
+                            <button type="submit" class="btn-primary text-xl">
                                 ✨ 診断結果を見る！ 💕
                             </button>
                         </div>
@@ -175,8 +175,8 @@
         <!-- 結果表示画面 -->
         <section id="result" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
             <div class="max-w-4xl mx-auto w-full">
-                <h2 class="text-3xl font-bold text-center mb-8 text-pink-700">🎉 診断結果だよ！ ✨</h2>
-                <div class="bg-white rounded-3xl card-shadow p-8 cute-border">
+                <h2 class="text-3xl font-bold text-center mb-8 text-primary-700">🎉 診断結果だよ！ ✨</h2>
+                <div class="card-cute p-8">
                     <div id="resultContent" class="space-y-8">
                         <!-- 結果がここに表示される -->
                     </div>
@@ -184,7 +184,7 @@
                         <button id="shareBtn" class="bg-blue-400 text-white px-8 py-4 rounded-full hover:bg-blue-500 transition transform hover:scale-105 font-bold text-lg shadow-lg">
                             📱 みんなにシェア！ ✨
                         </button>
-                        <button id="retryBtn" class="bg-pink-200 text-pink-700 px-8 py-4 rounded-full hover:bg-pink-300 transition font-bold text-lg">
+                        <button id="retryBtn" class="btn-secondary">
                             🔄 もう一度診断する
                         </button>
                     </div>
