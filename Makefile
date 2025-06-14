@@ -14,7 +14,7 @@ build:
 
 .PHONY: serve
 serve: build
-	docker run --rm -v "$$(pwd)/posture-diagnosis:/app" -w /app -p 8000:8000 python:3-alpine python -m http.server 8000
+	docker run --rm -v "$$(pwd)/posture-diagnosis:/app" -w /app -p 8000:8000 node:18-alpine sh -c "npm install -g http-server && http-server -p 8000"
 
 .PHONY: clean
 clean:
