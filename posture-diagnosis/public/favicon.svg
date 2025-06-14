@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景円（ピンク） -->
+  <circle cx="16" cy="16" r="15" fill="#ec4899" stroke="#db2777" stroke-width="2"/>
+  
+  <!-- ロボット顔の🤖 -->
+  <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="white">🤖</text>
+  
+  <!-- 小さなキラキラ -->
+  <text x="8" y="10" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">✨</text>
+  <text x="24" y="26" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="white">💕</text>
+</svg>

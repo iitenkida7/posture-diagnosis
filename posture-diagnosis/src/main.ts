@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // マネージャーの初期化
     cameraManager = new CameraManager();
     postureAnalyzer = new PostureAnalyzer();
+    
+    // TensorFlow.js の事前初期化（バックグラウンドで実行）
+    postureAnalyzer.initialize().catch(error => {
+        console.warn('TensorFlow.js事前初期化に失敗:', error);
+    });
 
     // セクション切り替え関数
     const showSection = (section: HTMLElement) => {
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // アンケートフォーム送信
-    questionForm.addEventListener('submit', (e) => {
+    questionForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // フォームデータを収集
@@ -82,18 +87,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 姿勢を分析
         if (capturedImage) {
-            analysisResult = postureAnalyzer.analyze(capturedImage, questionnaireData);
-            displayResult(analysisResult);
-            showSection(resultSection);
+            try {
+                const resultContent = document.getElementById('resultContent');
+                if (!resultContent) return;
+
+                showSection(resultSection);
+                
+                // 段階的なローディングメッセージで信頼性を演出
+                const loadingMessages = [
+                    { text: '🤖 AI が姿勢を検出中...', duration: 1500 },
+                    { text: '📐 骨格の角度を計算中...', duration: 1200 },
+                    { text: '🧠 姿勢パターンを分析中...', duration: 1000 },
+                    { text: '✨ 改善提案を生成中...', duration: 1300 }
+                ];
+
+                // 段階的にメッセージを表示
+                for (let i = 0; i < loadingMessages.length; i++) {
+                    const message = loadingMessages[i];
+                    resultContent.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                            <p class="text-primary-600 font-semibold text-lg">${message.text}</p>
+                            <div class="mt-4 w-64 bg-primary-100 rounded-full h-2 mx-auto">
+                                <div class="bg-primary-500 h-2 rounded-full transition-all duration-300" 
+                                     style="width: ${((i + 1) / loadingMessages.length) * 100}%"></div>
+                            </div>
+                            <p class="text-primary-500 text-sm mt-2">${Math.round(((i + 1) / loadingMessages.length) * 100)}% 完了</p>
+                        </div>
+                    `;
+                    
+                    // メッセージごとに待機
+                    await new Promise(resolve => setTimeout(resolve, message.duration));
+                }
+                
+                // 実際の姿勢分析を実行（バックグラウンドで既に開始）
+                analysisResult = await postureAnalyzer.analyze(capturedImage, questionnaireData);
+                
+                // 最終ローディング
+                resultContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="animate-pulse">
+                            <div class="w-16 h-16 bg-primary-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                <span class="text-white text-2xl">✨</span>
+                            </div>
+                        </div>
+                        <p class="text-primary-600 font-semibold text-lg">🎉 分析完了！結果を表示中...</p>
+                    </div>
+                `;
+                
+                // 少し待ってから結果表示
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                if (analysisResult) {
+                    await displayResult(analysisResult);
+                }
+            } catch (error) {
+                console.error('姿勢分析エラー:', error);
+                alert('姿勢分析中にエラーが発生しました。もう一度お試しください。');
+                showSection(questionnaireSection);
+            }
         }
     });
 
     // 結果を表示する関数
-    const displayResult = (result: PostureInfo) => {
+    const displayResult = async (result: PostureInfo) => {
         const resultContent = document.getElementById('resultContent');
         if (!resultContent) return;
 
-        resultContent.innerHTML = ResultTemplates.generateResultHTML(result);
+        const html = await ResultTemplates.generateResultHTML(result, capturedImage);
+        resultContent.innerHTML = html;
     };
 
     // シェアボタン

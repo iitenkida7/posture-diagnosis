@@ -52,22 +52,26 @@ export class CameraManager {
         const centerX = this.guideCanvas.width / 2;
         const centerY = this.guideCanvas.height / 2;
 
-        // ピンク系のグラデーション（より濃く）
+        // ピンク系のグラデーション（透過度を上げて薄く）
         const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 200);
-        gradient.addColorStop(0, 'rgba(236, 72, 153, 0.7)'); // primary-500 濃く
-        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.5)'); // primary-500 中間
+        gradient.addColorStop(0, 'rgba(236, 72, 153, 0.3)'); // primary-500 薄く
+        gradient.addColorStop(1, 'rgba(236, 72, 153, 0.2)'); // primary-500 さらに薄く
 
         // 塗りつぶし色を設定
         ctx.fillStyle = gradient;
-        ctx.strokeStyle = 'rgba(219, 39, 119, 1.0)'; // primary-600 完全不透明
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(219, 39, 119, 0.4)'; // primary-600 薄く
+        ctx.lineWidth = 3;
 
-        // 頭部（円）- 塗りつぶし
-        const headRadius = 45;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY - 130, headRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        // ロボット顔の追加 🤖（大きく）
+        const headCenterX = centerX;
+        const headCenterY = centerY - 130;
+        
+        // 顔の文字を描画（大きく）
+        ctx.fillStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600 少し透過
+        ctx.font = 'bold 72px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🤖', headCenterX, headCenterY);
 
         // 胴体（角丸長方形）- 塗りつぶし
         const bodyWidth = 90;
@@ -91,9 +95,9 @@ export class CameraManager {
         ctx.stroke();
 
         // 腕（太い線で描画）
-        ctx.lineWidth = 18;
+        ctx.lineWidth = 15;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'rgba(219, 39, 119, 0.8)'; // primary-600 濃く
+        ctx.strokeStyle = 'rgba(219, 39, 119, 0.4)'; // primary-600 薄く
 
         // 左腕
         ctx.beginPath();
@@ -108,7 +112,7 @@ export class CameraManager {
         ctx.stroke();
 
         // 脚（太い線で描画）
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 17;
 
         // 左脚
         ctx.beginPath();
@@ -123,7 +127,7 @@ export class CameraManager {
         ctx.stroke();
 
         // 手と足（小さな円）
-        ctx.fillStyle = 'rgba(219, 39, 119, 0.9)';
+        ctx.fillStyle = 'rgba(219, 39, 119, 0.4)';
 
         // 左手
         ctx.beginPath();
@@ -145,16 +149,6 @@ export class CameraManager {
         ctx.arc(centerX + 35, centerY + 130, 15, 0, Math.PI * 2);
         ctx.fill();
 
-        // 説明テキスト（ピンク系）
-        ctx.fillStyle = 'rgba(219, 39, 119, 0.9)'; // primary-600
-        ctx.font = 'bold 18px M PLUS Rounded 1c';
-        ctx.textAlign = 'center';
-        ctx.fillText('💕 ピンクのガイドに体を合わせてね ✨', centerX, 40);
-
-        // サブテキスト
-        ctx.fillStyle = 'rgba(236, 72, 153, 0.8)'; // primary-500
-        ctx.font = '14px M PLUS Rounded 1c';
-        ctx.fillText('全身が見えるように立ってください 🌸', centerX, centerY + 180);
     }
 
     // 写真を撮影

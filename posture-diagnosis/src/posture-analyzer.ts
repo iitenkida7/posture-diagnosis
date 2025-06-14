@@ -1,4 +1,6 @@
-// 姿勢分析のモック実装
+// TensorFlow.js による実際の姿勢分析実装
+import * as tf from '@tensorflow/tfjs';
+import * as poseDetection from '@tensorflow-models/pose-detection';
 
 // 姿勢タイプの定義
 export enum PostureType {
@@ -17,6 +19,17 @@ export interface PostureInfo {
     score: number; // 0-100のスコア
     problems: string[];
     recommendations: string[];
+    // 可視化用データを追加
+    visualizationData?: {
+        keypoints: poseDetection.Keypoint[];
+        angles: {
+            neckAngle: number;
+            shoulderAngle: number;
+            backAngle: number;
+            confidence: number;
+        };
+        detectedIssues: string[];
+    };
 }
 
 // アンケート回答
@@ -27,6 +40,9 @@ export interface QuestionnaireData {
 }
 
 export class PostureAnalyzer {
+    private detector: poseDetection.PoseDetector | null = null;
+    private isInitialized = false;
+
     // 姿勢タイプの情報定義
     private postureDatabase: Record<PostureType, Omit<PostureInfo, 'type' | 'score'>> = {
         [PostureType.FORWARD_HEAD]: {
@@ -105,24 +121,242 @@ export class PostureAnalyzer {
             ]
         }
     };
+
+    // TensorFlow.js PoseNet の初期化
+    async initialize(): Promise<void> {
+        if (this.isInitialized) return;
+
+        try {
+            // WebGL バックエンドを設定（GPU 高速化）
+            await tf.setBackend('webgl');
+            await tf.ready();
+
+            // MoveNet Lightning モデルを使用（軽量で高速）
+            const model = poseDetection.SupportedModels.MoveNet;
+            const detectorConfig = {
+                modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+            };
+
+            this.detector = await poseDetection.createDetector(model, detectorConfig);
+            this.isInitialized = true;
+            console.log('✅ TensorFlow.js PoseNet 初期化完了');
+        } catch (error) {
+            console.error('❌ TensorFlow.js PoseNet 初期化エラー:', error);
+            throw error;
+        }
+    }
+
+    // Base64画像を HTMLImageElement に変換
+    private async loadImageFromBase64(base64Data: string): Promise<HTMLImageElement> {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = base64Data;
+        });
+    }
+
+    // 姿勢の角度を計算
+    private calculatePostureAngles(keypoints: poseDetection.Keypoint[]): {
+        neckAngle: number;
+        shoulderAngle: number;
+        backAngle: number;
+        confidence: number;
+    } {
+        // 主要な関節点を取得
+        const nose = keypoints.find(kp => kp.name === 'nose');
+        const leftShoulder = keypoints.find(kp => kp.name === 'left_shoulder');
+        const rightShoulder = keypoints.find(kp => kp.name === 'right_shoulder');
+        const leftHip = keypoints.find(kp => kp.name === 'left_hip');
+        const rightHip = keypoints.find(kp => kp.name === 'right_hip');
+
+        // 信頼度チェック
+        const avgConfidence = [nose, leftShoulder, rightShoulder, leftHip, rightHip]
+            .filter(kp => kp)
+            .reduce((sum, kp) => sum + (kp?.score || 0), 0) / 5;
+
+        if (avgConfidence < 0.3) {
+            return { neckAngle: 0, shoulderAngle: 0, backAngle: 0, confidence: avgConfidence };
+        }
+
+        // 肩と腰の中点を計算
+        const shoulderCenter = {
+            x: ((leftShoulder?.x || 0) + (rightShoulder?.x || 0)) / 2,
+            y: ((leftShoulder?.y || 0) + (rightShoulder?.y || 0)) / 2
+        };
+        const hipCenter = {
+            x: ((leftHip?.x || 0) + (rightHip?.x || 0)) / 2,
+            y: ((leftHip?.y || 0) + (rightHip?.y || 0)) / 2
+        };
+
+        // 首の角度（前傾頭位チェック）
+        const neckAngle = this.calculateAngle(
+            { x: nose?.x || 0, y: nose?.y || 0 },
+            shoulderCenter,
+            { x: shoulderCenter.x, y: shoulderCenter.y - 100 } // 垂直基準線
+        );
+
+        // 肩の角度（巻き肩チェック）
+        const shoulderAngle = Math.abs((leftShoulder?.x || 0) - (rightShoulder?.x || 0));
+
+        // 背中の角度（反り腰チェック）
+        const backAngle = this.calculateAngle(
+            shoulderCenter,
+            hipCenter,
+            { x: hipCenter.x, y: hipCenter.y + 100 } // 垂直基準線
+        );
+
+        return {
+            neckAngle,
+            shoulderAngle,
+            backAngle,
+            confidence: avgConfidence
+        };
+    }
+
+    // 3点間の角度を計算
+    private calculateAngle(point1: {x: number, y: number}, point2: {x: number, y: number}, point3: {x: number, y: number}): number {
+        const vector1 = { x: point1.x - point2.x, y: point1.y - point2.y };
+        const vector2 = { x: point3.x - point2.x, y: point3.y - point2.y };
+
+        const dot = vector1.x * vector2.x + vector1.y * vector2.y;
+        const mag1 = Math.sqrt(vector1.x * vector1.x + vector1.y * vector1.y);
+        const mag2 = Math.sqrt(vector2.x * vector2.x + vector2.y * vector2.y);
+
+        const cos = dot / (mag1 * mag2);
+        const angle = Math.acos(Math.max(-1, Math.min(1, cos))) * (180 / Math.PI);
+
+        return angle;
+    }
+
+    // 角度から姿勢タイプを判定
+    private determinePostureType(angles: ReturnType<typeof this.calculatePostureAngles>, questionnaire: QuestionnaireData): {
+        type: PostureType;
+        score: number;
+    } {
+        let score = 100;
+        let detectedIssues: PostureType[] = [];
+
+        // 首の前傾チェック（30度以上で問題）
+        if (angles.neckAngle > 30) {
+            detectedIssues.push(PostureType.FORWARD_HEAD);
+            score -= 25;
+        }
+
+        // 肩の高さの差チェック（巻き肩判定）
+        if (angles.shoulderAngle > 20) {
+            detectedIssues.push(PostureType.ROUNDED_SHOULDERS);
+            score -= 20;
+        }
+
+        // 背中の角度チェック（反り腰判定）
+        if (angles.backAngle < 160 || angles.backAngle > 200) {
+            detectedIssues.push(PostureType.SWAYBACK);
+            score -= 15;
+        }
+
+        // アンケート結果での調整
+        const symptoms = questionnaire.symptoms;
+        if (symptoms.includes('neck') || symptoms.includes('headache')) score -= 10;
+        if (symptoms.includes('shoulder')) score -= 10;
+        if (symptoms.includes('back')) score -= 10;
+
+        // 運動習慣での調整
+        const exercise = questionnaire.exerciseFrequency;
+        if (exercise === 'none') score -= 15;
+        else if (exercise === 'daily' || exercise === 'weekly-4-5') score += 10;
+
+        // 最終判定
+        let finalType: PostureType;
+        if (detectedIssues.length === 0) {
+            finalType = PostureType.GOOD;
+        } else if (detectedIssues.length >= 2) {
+            finalType = PostureType.MIXED;
+        } else {
+            finalType = detectedIssues[0];
+        }
+
+        return {
+            type: finalType,
+            score: Math.max(0, Math.min(100, score))
+        };
+    }
     
-    // 画像とアンケート結果から姿勢を分析（モック実装）
-    analyze(imageData: string, questionnaire: QuestionnaireData): PostureInfo {
-        // 実際の実装では、ここで画像解析APIを呼び出す
-        // 今回はモックなので、アンケート結果に基づいて判定
-        
+    // 画像とアンケート結果から姿勢を分析（TensorFlow.js実装）
+    async analyze(imageData: string, questionnaire: QuestionnaireData): Promise<PostureInfo> {
+        try {
+            // 初期化チェック
+            if (!this.isInitialized || !this.detector) {
+                console.log('🔄 TensorFlow.js を初期化中...');
+                await this.initialize();
+            }
+
+            // Base64画像をHTMLImageElementに変換
+            const img = await this.loadImageFromBase64(imageData);
+            
+            // 姿勢検出実行
+            console.log('🔍 姿勢検出実行中...');
+            const poses = await this.detector!.estimatePoses(img);
+            
+            if (poses.length === 0) {
+                console.warn('⚠️ 人物が検出されませんでした');
+                // フォールバック: アンケート結果のみで判定
+                return this.fallbackAnalysis(questionnaire);
+            }
+
+            // 姿勢の角度を計算
+            const angles = this.calculatePostureAngles(poses[0].keypoints);
+            console.log('📐 検出された角度:', angles);
+
+            if (angles.confidence < 0.3) {
+                console.warn('⚠️ 検出精度が低いため、アンケート結果で補完');
+                return this.fallbackAnalysis(questionnaire);
+            }
+
+            // 姿勢タイプとスコアを判定
+            const { type, score } = this.determinePostureType(angles, questionnaire);
+
+            // 検出された問題箇所を特定
+            const detectedIssues: string[] = [];
+            if (angles.neckAngle > 30) detectedIssues.push('forward_head');
+            if (angles.shoulderAngle > 20) detectedIssues.push('rounded_shoulders');
+            if (angles.backAngle < 160 || angles.backAngle > 200) detectedIssues.push('swayback');
+
+            // 結果を返す
+            const baseInfo = this.postureDatabase[type];
+            console.log('✅ 姿勢分析完了:', { type, score, confidence: angles.confidence });
+            
+            return {
+                type,
+                score,
+                name: baseInfo.name,
+                description: `${baseInfo.description}（AI検出精度: ${Math.round(angles.confidence * 100)}%）`,
+                problems: baseInfo.problems,
+                recommendations: baseInfo.recommendations,
+                visualizationData: {
+                    keypoints: poses[0].keypoints,
+                    angles,
+                    detectedIssues
+                }
+            };
+
+        } catch (error) {
+            console.error('❌ TensorFlow.js姿勢分析エラー:', error);
+            console.log('🔄 アンケート結果にフォールバック');
+            return this.fallbackAnalysis(questionnaire);
+        }
+    }
+
+    // アンケート結果のみでの分析（フォールバック）
+    private fallbackAnalysis(questionnaire: QuestionnaireData): PostureInfo {
         let type: PostureType;
-        let score: number;
+        let score: number = 70;
         
-        // デスクワーク時間と症状から姿勢タイプを推定
         const deskHours = questionnaire.deskWorkHours;
         const symptoms = questionnaire.symptoms;
         const exercise = questionnaire.exerciseFrequency;
         
-        // スコアの初期値
-        score = 70;
-        
-        // デスクワーク時間による判定
+        // アンケート結果ベースの判定ロジック
         if (deskHours === 'more-8' || deskHours === '6-8') {
             score -= 20;
             if (symptoms.includes('shoulder') || symptoms.includes('neck')) {
@@ -145,23 +379,17 @@ export class PostureAnalyzer {
             type = PostureType.MIXED;
         }
         
-        // 運動習慣によるスコア調整
-        if (exercise === 'none') {
-            score -= 10;
-        } else if (exercise === 'daily' || exercise === 'weekly-4-5') {
-            score += 10;
-        }
+        if (exercise === 'none') score -= 10;
+        else if (exercise === 'daily' || exercise === 'weekly-4-5') score += 10;
         
-        // スコアの範囲を0-100に制限
         score = Math.max(0, Math.min(100, score));
         
-        // 結果を返す
         const baseInfo = this.postureDatabase[type];
         return {
             type,
             score,
             name: baseInfo.name,
-            description: baseInfo.description,
+            description: `${baseInfo.description}（アンケート結果ベース）`,
             problems: baseInfo.problems,
             recommendations: baseInfo.recommendations
         };
