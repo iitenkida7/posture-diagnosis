@@ -92,8 +92,8 @@ export class PoseVisualizer {
             ['right_hip', 'right_knee'], ['right_knee', 'right_ankle']
         ];
 
-        // 基本の骨格線を描画（薄いピンク）
-        this.ctx.strokeStyle = 'rgba(236, 72, 153, 0.6)'; // primary-500
+        // 基本の骨格線を描画（グリーン系）
+        this.ctx.strokeStyle = 'rgba(34, 197, 94, 0.7)'; // green-500
         this.ctx.lineWidth = 3;
         this.ctx.lineCap = 'round';
 
@@ -117,9 +117,9 @@ export class PoseVisualizer {
     private drawKeypoints(keypoints: poseDetection.Keypoint[]): void {
         keypoints.forEach(point => {
             if (point.score > 0.3) {
-                // 信頼度に基づいて色を変更
+                // 信頼度に基づいて色を変更（グリーン系）
                 const alpha = point.score;
-                this.ctx.fillStyle = `rgba(219, 39, 119, ${alpha})`; // primary-600
+                this.ctx.fillStyle = `rgba(22, 163, 74, ${alpha})`; // green-600
                 
                 this.ctx.beginPath();
                 this.ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);

@@ -76,7 +76,7 @@ export class ResultTemplates {
             <div class="mt-4 text-left bg-primary-50 p-4 rounded-xl border-2 border-primary-200">
                 <h5 class="font-bold text-primary-700 mb-2">📋 画像の見方</h5>
                 <div class="text-xs text-primary-600 space-y-1">
-                    <div>💕 <span class="text-pink-500">■</span> ピンクの線：正常な骨格</div>
+                    <div>✅ <span class="text-green-500">■</span> グリーンの線：正常な骨格</div>
                     <div>🔴 <span class="text-red-500">■</span> 赤い線：問題箇所</div>
                     <div>⚪ 白い点：関節の位置</div>
                     <div>📊 左上：詳細な測定値</div>
