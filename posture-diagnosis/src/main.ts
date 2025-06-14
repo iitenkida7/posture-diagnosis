@@ -144,7 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!analysisResult) return;
         
         // シェア用のテキストを作成
-        const shareText = `【姿勢診断結果】\\n私の姿勢タイプは「${analysisResult.name}」でした！\\nスコア: ${analysisResult.score}点\\n\\n#みんなの姿勢診断`;
+        const shareText = `【姿勢診断結果】
+私の姿勢タイプは「${analysisResult.name}」でした！
+スコア: ${analysisResult.score}点
+
+#みんなの姿勢診断`;
         
         // Twitter シェア（実装例）
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
